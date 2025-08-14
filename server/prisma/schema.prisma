@@ -1,0 +1,130 @@
+// This is your Prisma schema file
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  username  String?  @unique
+  avatar    String?
+  
+  // Wallet information
+  walletAddress String? @unique
+  
+  // Profile information
+  firstName String?
+  lastName  String?
+  bio       String?
+  
+  // Settings
+  isEmailVerified Boolean @default(false)
+  isActive        Boolean @default(true)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  claims        AirdropClaim[]
+  
+  @@map("users")
+}
+
+// Airdrop model
+model Airdrop {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  imageUrl    String?
+  
+  // Project information
+  projectName String
+  projectUrl  String?
+  twitterUrl  String?
+  discordUrl  String?
+  
+  // Airdrop details
+  tokenSymbol    String
+  tokenContract  String?
+  totalSupply    String? // Using string for big numbers
+  airdropAmount  String? // Using string for big numbers
+  
+  // Eligibility criteria
+  requirements   Json? // Store requirements as JSON
+  eligibilityCriteria String?
+  
+  // Status and dates
+  status        AirdropStatus @default(UPCOMING)
+  startDate     DateTime?
+  endDate       DateTime?
+  claimDeadline DateTime?
+  
+  // Blockchain information
+  chainId       Int
+  chainName     String
+  
+  // Metrics
+  participants  Int      @default(0)
+  totalClaimed  String?  @default("0")
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  claims AirdropClaim[]
+  
+  @@map("airdrops")
+}
+
+// Airdrop claim model
+model AirdropClaim {
+  id        String   @id @default(cuid())
+  
+  // Relations
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  airdropId String
+  airdrop   Airdrop  @relation(fields: [airdropId], references: [id], onDelete: Cascade)
+  
+  // Claim details
+  amount          String? // Using string for big numbers
+  transactionHash String?
+  blockNumber     String?
+  
+  // Status
+  status    ClaimStatus @default(PENDING)
+  
+  // Timestamps
+  claimedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  
+  @@unique([userId, airdropId])
+  @@map("airdrop_claims")
+}
+
+// Enums
+enum AirdropStatus {
+  UPCOMING
+  ACTIVE
+  ENDED
+  CANCELLED
+}
+
+enum ClaimStatus {
+  PENDING
+  ELIGIBLE
+  CLAIMED
+  EXPIRED
+  FAILED
+}
