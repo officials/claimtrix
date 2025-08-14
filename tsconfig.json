@@ -1,0 +1,50 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": false,
+    "declaration": true,
+    "outDir": "./dist",
+    "rootDir": "./",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./apps/web/src/*"],
+      "@components/*": ["./apps/web/src/components/*"],
+      "@pages/*": ["./apps/web/src/pages/*"],
+      "@hooks/*": ["./apps/web/src/hooks/*"],
+      "@utils/*": ["./apps/web/src/utils/*"],
+      "@types/*": ["./apps/web/src/types/*"],
+      "@styles/*": ["./apps/web/src/styles/*"],
+      "@api/*": ["./apps/api/src/*"],
+      "@shared/*": ["./libs/shared/*"]
+    }
+  },
+  "include": [
+    "apps/**/*",
+    "libs/**/*",
+    "tools/**/*",
+    "*.ts",
+    "*.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "**/*.spec.ts",
+    "**/*.test.ts"
+  ]
+}
